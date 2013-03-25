@@ -2,13 +2,16 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.12'
 gem 'bootstrap-sass', '2.1'
+gem 'bcrypt-ruby', '3.0.1'
 
 group :development, :test do
   gem 'sqlite3', '1.3.5'
   gem 'rspec-rails', '2.11.0'
-#  gem 'guard-rspec', '1.2.1'
 end
 
+group :development do
+  gem 'annotate', '2.5.0'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -22,8 +25,6 @@ gem 'jquery-rails', '2.0.2'
 
 group :test do
   gem 'capybara', '1.1.2'
-#  gem 'rb-inotify', '~> 0.9'
-#  gem 'libnotify', '~>0.8.0'
 end
 
 group :production do
