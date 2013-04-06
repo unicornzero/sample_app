@@ -71,13 +71,13 @@ describe "Authentication" do
               fill_in "Email", with: user.email
               fill_in "Password", with: user.password
               click_button "Sign in"
-            end
+            end #before
             it "should render the default (profile) page" do
               page.should have_selector('title', text: user.name)
-            end 
-          end
-        end
-      end # for non-signed-in users
+            end #render profile
+          end #when signing in again
+        end #after signing in
+      end# when attempting to visit a protected page
 
       describe "in the Users controller" do
 
@@ -95,28 +95,23 @@ describe "Authentication" do
           before { visit users_path }
           it { should have_selector('title', text: 'Sign in') }
         end
-    end
+      end #in the users controller
 
-#    describe "Admin deleting" do
-#      let(:admin) { FactoryGirl.create(:admin) }
-#
-#      before do
-#        
-#      end
-#
-#      describe "valid user" do
-#        #
-#      end
-#
-#
-#      describe "their own record" do
-#        #
-#      end
+      describe "in the Microposts controller" do
 
+        describe "submitting to the create action" do
+          before { post microposts_path }
+          specify { response.should redirect_to(signin_path) }
+        end
 
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { response.should redirect_to(signin_path) }
+        end
 
-#      end
-    end
+      end #in the microposts controller
+
+    end # as non-signed-in users
 
     describe "as wrong user" do
       let(:user) { FactoryGirl.create(:user) }
@@ -132,18 +127,18 @@ describe "Authentication" do
         before { put user_path(wrong_user) }
         specify { response.should redirect_to(root_path) }
       end
-    end
+    end #as wrong user
 
-  describe "as non-admin user" do
-    let(:user) { FactoryGirl.create(:user) }
-    let(:non_admin) { FactoryGirl.create(:user) }
-    before { sign_in non_admin }
+    describe "as non-admin user" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:non_admin) { FactoryGirl.create(:user) }
+      before { sign_in non_admin }
 
-    describe "submitting a DELETE request to the Users#destroy action" do
-      before { delete user_path(user) }
-      specify { response.should redirect_to(root_path) }
-    end
-  end
+      describe "submitting a DELETE request to the Users#destroy action" do
+        before { delete user_path(user) }
+        specify { response.should redirect_to(root_path) }
+      end
+    end #as non-admin user
 
   end #authorization
 
