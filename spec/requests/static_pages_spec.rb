@@ -21,18 +21,32 @@ describe "Static pages" do
       let(:user) { FactoryGirl.create(:user) }
       before do
         FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
-        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
         sign_in user
         visit root_path
       end
 
-      it "should render the user's feed" do
-        user.feed.each do |item|
-          page.should have_selector("li##{item.id}", text: item.content)
-        end
+      it "with one micropost, should list '1 micropost'" do
+        page.should have_selector('span', text: "1 micropost")
       end
-    end
-  end
+
+      describe "with a second micropost" do
+        before do
+          FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+          visit root_path
+        end
+
+        it "should render the user's feed" do
+          user.feed.each do |item|
+            page.should have_selector("li##{item.id}", text: item.content)
+          end
+        end
+
+        it "should count two microposts" do
+          page.should have_selector('span', text: "2 microposts")
+        end
+      end #with a second micropost
+    end #for signed-in users
+  end #home
 
   describe "Help page" do
     before { visit help_path }
